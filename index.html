@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Copa do Mundo 2026 - Mata-Mata</title>
+    <style>
+	* {
+		box-sizing: border-box;
+		margin: 0;
+		padding: 0;
+	}
+
+	body {
+		font-family: 'Segoe UI', -apple-system, Roboto, sans-serif;
+		background-color: #0b0f19;
+		color: #f0f6fc;
+		height: 100vh;
+		width: 100vw;
+		display: flex;
+		flex-direction: column;
+		overflow: hidden;
+		padding: 10px;
+	}
+
+	header {
+		text-align: center;
+		height: 6vh;
+	}
+
+	header h1 {
+		font-size: 1.4rem;
+		color: #4f46e5;
+		text-transform: uppercase;
+		letter-spacing: 1px;
+	}
+
+	.bracket-container {
+		display: grid;
+		grid-template-columns: repeat(4, 1fr) 1.3fr repeat(4, 1fr);
+		gap: 12px;
+		height: 92vh;
+		width: 100%;
+		align-items: center;
+	}
+
+	.phase-col {
+		display: flex;
+		flex-direction: column;
+		justify-content: space-around;
+		height: 100%;
+	}
+
+	.center-col {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: 45px;
+		height: 100%;
+	}
+
+	.match-card {
+		background-color: #161b26;
+		border: 1px solid #2d3748;
+		border-radius: 6px;
+		padding: 2px 8px;
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		font-size: 0.75rem;
+		box-shadow: 0 4px 10px rgba(0,0,0,0.4);
+		transition: border-color 0.2s;
+	}
+
+	.match-card:hover {
+		border-color: #4f46e5;
+	}
+
+	.card-header {
+		display: flex;
+		justify-content: space-between;
+		font-size: 0.6rem;
+		color: #718096;
+		border-bottom: 1px solid #2d3748;
+		padding-bottom: 4px;
+		margin-bottom: 2px;
+	}
+
+	.team-row {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 2px 0;
+	}
+
+	.team-name {
+		font-weight: 600;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		max-width: 75%;
+	}
+
+	.score-input {
+		width: 32px;
+		height: 20px;
+		background-color: #0b0f19;
+		border: 1px solid #4a5568;
+		color: #fff;
+		text-align: center;
+		font-weight: bold;
+		border-radius: 4px;
+		font-size: 0.8rem;
+	}
+
+	.score-input:disabled {
+		opacity: 0.25;
+		cursor: not-allowed;
+	}
+
+	.final-title {
+		text-align: center;
+		font-weight: bold;
+		color: #f59e0b;
+		font-size: 0.85rem;
+		text-transform: uppercase;
+		margin-bottom: 6px;
+	}
+
+	.grey-title {
+		color: #a0aec0;
+	}
+
+	.winner {
+		color: #10b981 !important;
+	}
+
+	.placeholder {
+		color: #4a5568;
+		font-style: italic;
+		font-weight: normal;
+	}
+
+	.third-place {
+		opacity: 0.65;
+	}
+
+	/* Botões de Pênaltis */
+	.penalty-btn {
+		background-color: #f59e0b;
+		border: none;
+		color: #0b0f19;
+		font-size: 0.6rem;
+		font-weight: bold;
+		padding: 2px 4px;
+		border-radius: 3px;
+		cursor: pointer;
+		transition: background-color 0.2s;
+	}
+
+	.penalty-btn:hover {
+		background-color: #d97706;
+	}
+
+	</style>
+</head>
+<body>
+
+    <header>
+        <h1>Copa do Mundo 2026 - Fase Eliminatória</h1>
+    </header>
+
+    <div class="bracket-container" id="bracket">
+        <!-- Colunas da Esquerda -->
+        <div class="phase-col" id="L16"></div>
+        <div class="phase-col" id="L8"></div>
+        <div class="phase-col" id="L4"></div>
+        <div class="phase-col" id="L2"></div>
+
+        <!-- Centro (Finais) -->
+        <div class="center-col">
+            <div class="final-wrapper">
+                <div class="final-title">Grande Final</div>
+                <div class="match-card final-card" id="FINAL">
+                    <div class="card-header"><span>19/07 - 16:00</span><span>MetLife Stadium</span></div>
+                    <div class="team-row">
+                        <span class="team-name placeholder" id="final-t1">A definir</span>
+                        <input type="number" class="score-input" min="0" disabled>
+                    </div>
+                    <div class="team-row">
+                        <span class="team-name placeholder" id="final-t2">A definir</span>
+                        <input type="number" class="score-input" min="0" disabled>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="final-wrapper text-center">
+                <div class="final-title grey-title">Disputa de 3º Lugar</div>
+                <div class="match-card third-place">
+                    <div class="card-header"><span>18/07 - 18:00</span><span>Hard Rock Stadium</span></div>
+                    <div class="team-row"><span class="team-name placeholder">Perdedor Semi 1</span></div>
+                    <div class="team-row"><span class="team-name placeholder">Perdedor Semi 2</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Colunas da Direita -->
+        <div class="phase-col" id="R2"></div>
+        <div class="phase-col" id="R4"></div>
+        <div class="phase-col" id="R8"></div>
+        <div class="phase-col" id="R16"></div>
+    </div>
+
+    <script>
+	// Você pode preencher os campos "gols1" e "gols2" para os jogos iniciarem salvos
+const dadosTorneio = {
+  "partidas_iniciais": {
+    "esquerda": [
+      { "id": "L16-1", "next": "L8-1", "slot": "t1", "t1": "África do Sul", "t2": "Canadá", "date": "28/06", "time": "16:00", "gols1": "0", "gols2": "1", "vencedor_penaltis": null  },
+      { "id": "L16-2", "next": "L8-1", "slot": "t2", "t1": "Holanda", "t2": "Marrocos", "date": "29/06", "time": "22:00", "gols1": "1", "gols2": "1", "vencedor_penaltis": "1"  },
+      { "id": "L16-3", "next": "L8-2", "slot": "t1", "t1": "Alemanha", "t2": "Paraguai", "date": "29/06", "time": "17:30", "gols1": "1", "gols2": "1", "vencedor_penaltis": "1"  },
+      { "id": "L16-4", "next": "L8-2", "slot": "t2", "t1": "França", "t2": "Suécia", "date": "30/06", "time": "18:00", "gols1": "3", "gols2": "0", "vencedor_penaltis": null  },
+      { "id": "L16-5", "next": "L8-3", "slot": "t1", "t1": "Bélgica", "t2": "Senegal", "date": "01/07", "time": "17:00", "gols1": "0", "gols2": "2", "vencedor_penaltis": null  },
+      { "id": "L16-6", "next": "L8-3", "slot": "t2", "t1": "Estados Unidos", "t2": "Bósnia", "date": "01/07", "time": "21:00", "gols1": "", "gols2": "", "vencedor_penaltis": null  },
+      { "id": "L16-7", "next": "L8-4", "slot": "t1", "t1": "Espanha", "t2": "Áustria", "date": "02/07", "time": "16:00", "gols1": "", "gols2": "", "vencedor_penaltis": null  },
+      { "id": "L16-8", "next": "L8-4", "slot": "t2", "t1": "Portugal", "t2": "Croácia", "date": "02/07", "time": "20:00", "gols1": "", "gols2": "", "vencedor_penaltis": null  }
+    ],
+    "direita": [
+      { "id": "R16-1", "next": "R8-1", "slot": "t1", "t1": "Brasil", "t2": "Japão", "date": "29/06", "time": "14:00", "gols1": "2", "gols2": "1", "vencedor_penaltis": null  },
+      { "id": "R16-2", "next": "R8-1", "slot": "t2", "t1": "Costa do Marfim", "t2": "Noruega", "date": "30/06", "time": "14:00", "gols1": "1", "gols2": "2", "vencedor_penaltis": null  },
+      { "id": "R16-3", "next": "R8-2", "slot": "t1", "t1": "México", "t2": "Equador", "date": "30/06", "time": "23:00", "gols1": "2", "gols2": "0", "vencedor_penaltis": null  },
+      { "id": "R16-4", "next": "R8-2", "slot": "t2", "t1": "Inglaterra", "t2": "RD Congo", "date": "01/07", "time": "13:00", "gols1": "2", "gols2": "1", "vencedor_penaltis": null  },
+      { "id": "R16-5", "next": "R8-3", "slot": "t1", "t1": "Suíça", "t2": "Argélia", "date": "03/07", "time": "00:00", "gols1": "", "gols2": "", "vencedor_penaltis": null  },
+      { "id": "R16-6", "next": "R8-3", "slot": "t2", "t1": "Colômbia", "t2": "Gana", "date": "03/07", "time": "22:30", "gols1": "", "gols2": "", "vencedor_penaltis": null  },
+      { "id": "R16-7", "next": "R8-4", "slot": "t1", "t1": "Austrália", "t2": "Egito", "date": "03/07", "time": "15:00", "gols1": "", "gols2": "", "vencedor_penaltis": null  },
+      { "id": "R16-8", "next": "R8-4", "slot": "t2", "t1": "Argentina", "t2": "Cabo Verde", "date": "03/07", "time": "19:00", "gols1": "", "gols2": "", "vencedor_penaltis": null  }
+    ]
+  },
+  "estrutura_fases": {
+    "esquerda": [
+		{ "fase": "oitavas", "jogos": [ 
+			{"id": "L8-1", "next": "L4-1", "slot": "t1", "label": "Oitavas 1", "date": "04/07", "time": "14:00", "gols1": "", "gols2": "", "vencedor_penaltis": null},
+			{"id": "L8-2", "next": "L4-1", "slot": "t2", "label": "Oitavas 2", "date": "04/07", "time": "18:00", "gols1": "", "gols2": "", "vencedor_penaltis": null},
+			{"id": "L8-3", "next": "L4-2", "slot": "t1", "label": "Oitavas 3", "date": "06/07", "time": "21:00", "gols1": "", "gols2": "", "vencedor_penaltis": null},
+			{"id": "L8-4", "next": "L4-2", "slot": "t2", "label": "Oitavas 4", "date": "06/07", "time": "16:00", "gols1": "", "gols2": "", "vencedor_penaltis": null}
+		]},
+		{ "fase": "quartas", "jogos": [
+			{"id": "L4-1", "next": "L2-1", "slot": "t1", "label": "Quartas 1"},
+			{"id": "L4-2", "next": "L2-1", "slot": "t2", "label": "Quartas 2"}
+		]},
+		{ "fase": "semis", "jogos": [
+			{"id": "L2-1", "next": "FINAL", "slot": "t1", "label": "Semifinal 1"} 
+		]}
+    ],
+    "direita": [
+		{ "fase": "semis", "jogos": [ 
+			{"id": "R2-1", "next": "FINAL", "slot": "t2", "label": "Semifinal 2"} ]},
+		{ "fase": "quartas", "jogos": [
+			{"id": "R4-1", "next": "R2-1", "slot": "t1", "label": "Quartas 3"},
+			{"id": "R4-2", "next": "R2-1", "slot": "t2", "label": "Quartas 4"} 
+		]},
+		{ "fase": "oitavas", "jogos": [
+			{"id": "R8-1", "next": "R4-1", "slot": "t1", "label": "Oitavas 5"},
+			{"id": "R8-2", "next": "R4-1", "slot": "t2", "label": "Oitavas 6"},
+			{"id": "R8-3", "next": "R4-2", "slot": "t1", "label": "Oitavas 7"},
+			{"id": "R8-4", "next": "R4-2", "slot": "t2", "label": "Oitavas 8"} 
+		]}
+    ]
+  }
+};
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    inicializarTorneio(dadosTorneio);
+});
+
+function inicializarTorneio(data) {
+    renderizarCardsIniciais(data.partidas_iniciais.esquerda, 'L16');
+    renderizarCardsIniciais(data.partidas_iniciais.direita, 'R16');
+
+    data.estrutura_fases.esquerda.forEach(fase => renderizarCardsVazios(fase.jogos, fase.fase === 'oitavas' ? 'L8' : fase.fase === 'quartas' ? 'L4' : 'L2'));
+    data.estrutura_fases.direita.forEach(fase => renderizarCardsVazios(fase.jogos, fase.fase === 'semis' ? 'R2' : fase.fase === 'quartas' ? 'R4' : 'R8'));
+
+    configurarEventosPlacar();
+    carregarPlacaresIniciais();
+}
+
+function renderizarCardsIniciais(jogos, containerId) {
+    const container = document.getElementById(containerId);
+    jogos.forEach(j => {
+        const pWin = j.vencedor_penaltis !== undefined ? j.vencedor_penaltis : null;
+        container.innerHTML += `
+            <div class="match-card" data-match-id="${j.id}" data-next-match="${j.next}" data-slot="${j.slot}" data-p-winner="${pWin}">
+	<div class="card-header">
+		<span>${j.date} - ${j.time}</span>
+		<span>UTC-3</span>
+	</div>
+	<div class="team-row">
+		<span class="team-name">${j.t1}</span>
+		<div style="display: flex; gap: 4px; align-items: center;">
+			<button class="penalty-btn btn-t1" style="display:none;" onclick="forçarVencedorPenalties(this, 0)">(P)</button>
+			<input type="number" class="score-input input-t1" min="0" value="${j.gols1}">
+                    </div>
+		</div>
+		<div class="team-row">
+			<span class="team-name">${j.t2}</span>
+			<div style="display: flex; gap: 4px; align-items: center;">
+				<button class="penalty-btn btn-t2" style="display:none;" onclick="forçarVencedorPenalties(this, 1)">(P)</button>
+				<input type="number" class="score-input input-t2" min="0" value="${j.gols2}">
+                    </div>
+			</div>
+		</div>`;
+    });
+}
+
+function renderizarCardsVazios(jogos, containerId) {
+    const container = document.getElementById(containerId);
+    jogos.forEach(j => {
+        container.innerHTML += `
+            <div class="match-card" data-match-id="${j.id}" data-next-match="${j.next}" data-slot="${j.slot}" data-p-winner="null">
+			<div class="card-header">
+				<span>${j.label}</span>
+			</div>
+			<div class="team-row">
+				<span class="team-name placeholder">A definir</span>
+				<div style="display: flex; gap: 4px; align-items: center;">
+					<button class="penalty-btn btn-t1" style="display:none;" onclick="forçarVencedorPenalties(this, 0)">(P)</button>
+					<input type="number" class="score-input input-t1" min="0" disabled>
+				</div>
+			</div>
+			<div class="team-row">
+				<span class="team-name placeholder">A definir</span>
+				<div style="display: flex; gap: 4px; align-items: center;">
+					<button class="penalty-btn btn-t2" style="display:none;" onclick="forçarVencedorPenalties(this, 1)">(P)</button>
+					<input type="number" class="score-input input-t2" min="0" disabled>
+				</div>
+			</div>
+		</div>`;
+    });
+}
+
+function carregarPlacaresIniciais() {
+    document.querySelectorAll('.match-card').forEach(card => {
+        const i1 = card.querySelector('.input-t1');
+        const i2 = card.querySelector('.input-t2');
+        if (i1 && i2 && i1.value !== '' && i2.value !== '') {
+            // Dispara evento nativo para que a engine processe o jogo salvo
+            processarPartida(card);
+        }
+    });
+}
+
+function configurarEventosPlacar() {
+    document.addEventListener('input', (e) => {
+        if (!e.target.classList.contains('score-input'))
+            return;
+        const card = e.target.closest('.match-card');
+        card.setAttribute('data-p-winner', 'null'); // Reseta penaltis salvos se mudar o placar na mão
+        processarPartida(card);
+    });
+}
+
+function processarPartida(card, vencedorFixoIndex = null) {
+    const i1 = card.querySelector('.input-t1');
+    const i2 = card.querySelector('.input-t2');
+    const btn1 = card.querySelector('.btn-t1');
+    const btn2 = card.querySelector('.btn-t2');
+    const teams = card.querySelectorAll('.team-name');
+
+    const v1 = i1.value;
+    const v2 = i2.value;
+
+    if (v1 !== '' && v2 !== '') {
+        let winName = '';
+        let winIdx = 0;
+
+        if (parseInt(v1) > parseInt(v2)) {
+            winName = teams[0].innerText;
+            winIdx = 0;
+            if (btn1) {
+                btn1.style.display = 'none';
+                btn2.style.display = 'none';
+            }
+        } else if (parseInt(v2) > parseInt(v1)) {
+            winName = teams[1].innerText;
+            winIdx = 1;
+            if (btn1) {
+                btn1.style.display = 'none';
+                btn2.style.display = 'none';
+            }
+        } else {
+            // Regra de Empate
+            const salvoAttr = card.getAttribute('data-p-winner');
+            if (vencedorFixoIndex !== null) {
+                winIdx = vencedorFixoIndex;
+                winName = teams[winIdx].innerText + " (P)";
+                if (btn1) {
+                    btn1.style.display = 'none';
+                    btn2.style.display = 'none';
+                }
+            } else if (salvoAttr !== 'null' && salvoAttr !== null) {
+                winIdx = parseInt(salvoAttr);
+                winName = teams[winIdx].innerText + " (P)";
+                if (btn1) {
+                    btn1.style.display = 'none';
+                    btn2.style.display = 'none';
+                }
+            } else {
+                if (btn1) {
+                    btn1.style.display = 'inline-block';
+                    btn2.style.display = 'inline-block';
+                }
+                return;
+            }
+        }
+        teams.forEach((t, i) => {
+            if (i === winIdx)
+                t.classList.add('winner');
+            else
+                t.classList.remove('winner');
+        });
+        const nextId = card.getAttribute('data-next-match');
+        const slot = card.getAttribute('data-slot');
+        if (nextId === 'FINAL') {
+            const finalCard = document.getElementById('FINAL');
+            const targetRow = finalCard.querySelectorAll('.team-row')[slot === 't1' ? 0 : 1];
+            const targetName = targetRow.querySelector('.team-name');
+            targetName.innerText = winName;
+            targetName.classList.remove('placeholder');
+            verificarLiberacaoProximaFase(finalCard);
+        } else {
+            const nextCard = document.querySelector(`[data-match-id="${nextId}"]`);
+            if (nextCard) {
+                const targetRow = nextCard.querySelectorAll('.team-row')[slot === 't1' ? 0 : 1];
+                const targetName = targetRow.querySelector('.team-name');
+                targetName.innerText = winName;
+                targetName.classList.remove('placeholder');
+                verificarLiberacaoProximaFase(nextCard);
+            }
+        }
+    }
+}
+function forçarVencedorPenalties(botaoElement, indexVencedor) {
+    const card = botaoElement.closest('.match-card');
+    card.setAttribute('data-p-winner', indexVencedor);
+    processarPartida(card, indexVencedor);
+}
+function verificarLiberacaoProximaFase(card) {
+    const placeholders = card.querySelectorAll('.placeholder');
+    if (placeholders.length === 0) {
+        card.querySelectorAll('.score-input').forEach(i => i.removeAttribute('disabled'));
+    }
+}
+    </script>
+</body>
+</html>
