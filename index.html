@@ -198,7 +198,7 @@
             <div class="final-wrapper">
                 <div class="final-title">Grande Final</div>
                 <div class="match-card final-card" id="FINAL">
-                    <div class="card-header"><span>19/07 - 16:00</span><span>MetLife Stadium</span></div>
+                    <div class="card-header"><strong>Dom </strong><span>19/07 - 16:00</span><span>MetLife Stadium</span></div>
                     <div class="team-row">
                         <span class="team-name placeholder" id="final-t1">A definir</span>
                         <input type="number" class="score-input" min="0" disabled>
@@ -213,7 +213,7 @@
             <div class="final-wrapper text-center">
                 <div class="final-title grey-title">Disputa de 3º Lugar</div>
                 <div class="match-card third-place">
-                    <div class="card-header"><span>18/07 - 18:00</span><span>Hard Rock Stadium</span></div>
+                    <div class="card-header"><strong>Sab </strong><span>18/07 - 18:00</span><span>Hard Rock Stadium</span></div>
                     <div class="team-row"><span class="team-name placeholder">Perdedor Semi 1</span></div>
                     <div class="team-row"><span class="team-name placeholder">Perdedor Semi 2</span></div>
                 </div>
@@ -266,11 +266,11 @@
 			]},
 			{ "fase": "semis", "jogos": [
 				{"id": "L2-1", "next": "FINAL", "slot": "t1", "label": "Semifinal 1", "date": "14/07", "time": "16:00", "gols1": "", "gols2": "", "vencedor_penaltis": null}
-			]}
+			]},
 		],
 		"direita": [
 			{ "fase": "semis", "jogos": [ 
-				{"id": "R2-1", "next": "FINAL", "slot": "t2", "label": "Semifinal 2", "date": "05/07", "time": "16:00", "gols1": "", "gols2": "", "vencedor_penaltis": null}
+				{"id": "R2-1", "next": "FINAL", "slot": "t2", "label": "Semifinal 2", "date": "15/07", "time": "16:00", "gols1": "", "gols2": "", "vencedor_penaltis": null}
 			]},
 			{ "fase": "quartas", "jogos": [
 				{"id": "R4-1", "next": "R2-1", "slot": "t1", "label": "Quartas 3", "date": "11/07", "time": "18:00", "gols1": "", "gols2": "", "vencedor_penaltis": null},
@@ -314,24 +314,27 @@
 		jogos.forEach(j => {
 			const pWin = j.vencedor_penaltis !== undefined ? j.vencedor_penaltis : null;
 			container.innerHTML += `
-				<div class="match-card" data-date="${j.date}" data-time="${j.time}" data-match-id="${j.id}" data-next-match="${j.next}" data-slot="${j.slot}" data-p-winner="${pWin}">
-		<div class="card-header">
-			<span>${j.date} - ${j.time}</span>
-			<span>UTC-3</span>
-		</div>
-		<div class="team-row">
-			<span class="team-name">${j.t1}</span>
-			<div style="display: flex; gap: 4px; align-items: center;">
-				<button class="penalty-btn btn-t1" style="display:none;" onclick="forçarVencedorPenalties(this, 0)">(P)</button>
-				<input type="number" class="score-input input-t1" min="0" value="${j.gols1}">
-						</div>
-			</div>
-			<div class="team-row">
-				<span class="team-name">${j.t2}</span>
-				<div style="display: flex; gap: 4px; align-items: center;">
-					<button class="penalty-btn btn-t2" style="display:none;" onclick="forçarVencedorPenalties(this, 1)">(P)</button>
-					<input type="number" class="score-input input-t2" min="0" value="${j.gols2}">
-						</div>
+			<div class="match-card" data-date="${j.date}" data-time="${j.time}" data-match-id="${j.id}" data-next-match="${j.next}" data-slot="${j.slot}" data-p-winner="${pWin}">
+				<div class="card-header">
+					<span>
+						<strong>${obterDiaSemana(j.date)}</strong>
+						${j.date} - ${j.time}
+					</span>
+					<span>UTC-3</span>
+				</div>
+				<div class="team-row">
+					<span class="team-name">${j.t1}</span>
+					<div style="display: flex; gap: 4px; align-items: center;">
+						<button class="penalty-btn btn-t1" style="display:none;" onclick="forçarVencedorPenalties(this, 0)">(P)</button>
+						<input type="number" class="score-input input-t1" min="0" value="${j.gols1}">
+					</div>
+				</div>
+				<div class="team-row">
+					<span class="team-name">${j.t2}</span>
+					<div style="display: flex; gap: 4px; align-items: center;">
+						<button class="penalty-btn btn-t2" style="display:none;" onclick="forçarVencedorPenalties(this, 1)">(P)</button>
+						<input type="number" class="score-input input-t2" min="0" value="${j.gols2}">
+					</div>
 				</div>
 			</div>`;
 		});
@@ -341,9 +344,12 @@
 		const container = document.getElementById(containerId);
 		jogos.forEach(j => {
 			container.innerHTML += `
-				<div class="match-card" data-date="${j.date}" data-time="${j.time}" data-match-id="${j.id}" data-next-match="${j.next}" data-slot="${j.slot}" data-p-winner="null">
+			<div class="match-card" data-date="${j.date}" data-time="${j.time}" data-match-id="${j.id}" data-next-match="${j.next}" data-slot="${j.slot}" data-p-winner="null">
 				<div class="card-header">
-					<span>${j.date} - ${j.time}</span>
+					<span>
+						<strong>${obterDiaSemana(j.date)}</strong>
+						${j.date} - ${j.time}
+					</span>
 					<span>UTC-3</span>
 				</div>
 				<div class="team-row">
@@ -518,6 +524,14 @@
 		else {
 			card.classList.add('match-future');
 		}
+	}
+	function obterDiaSemana(dataStr) {
+		const dias = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
+
+		const [dia, mes] = dataStr.split("/").map(Number);
+		const data = new Date(2026, mes - 1, dia);
+
+		return dias[data.getDay()];
 	}
     </script>
 </body>
