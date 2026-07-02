@@ -75,6 +75,22 @@
 	.match-card:hover {
 		border-color: #4f46e5;
 	}
+	
+	/* Jogo já encerrado */
+	.match-card.match-past {
+		border-color: #10b981; /* verde */
+	}
+
+	/* Jogo de hoje */
+	.match-card.match-today {
+		border-color: #f59e0b; /* amarelo */
+		box-shadow: 0 0 12px rgba(245,158,11,.35);
+	}
+
+	/* Jogo futuro */
+	.match-card.match-future {
+		border-color: #4f46e5; /* azul */
+	}
 
 	.card-header {
 		display: flex;
@@ -220,8 +236,8 @@
 		  { "id": "L16-2", "next": "L8-1", "slot": "t2", "t1": "Holanda", "t2": "Marrocos", "date": "29/06", "time": "22:00", "gols1": "1", "gols2": "1", "vencedor_penaltis": "1"  },
 		  { "id": "L16-3", "next": "L8-2", "slot": "t1", "t1": "Alemanha", "t2": "Paraguai", "date": "29/06", "time": "17:30", "gols1": "1", "gols2": "1", "vencedor_penaltis": "1"  },
 		  { "id": "L16-4", "next": "L8-2", "slot": "t2", "t1": "França", "t2": "Suécia", "date": "30/06", "time": "18:00", "gols1": "3", "gols2": "0", "vencedor_penaltis": null  },
-		  { "id": "L16-5", "next": "L8-3", "slot": "t1", "t1": "Bélgica", "t2": "Senegal", "date": "01/07", "time": "17:00", "gols1": "2", "gols2": "2", "vencedor_penaltis": null  },
-		  { "id": "L16-6", "next": "L8-3", "slot": "t2", "t1": "Estados Unidos", "t2": "Bósnia", "date": "01/07", "time": "21:00", "gols1": "", "gols2": "", "vencedor_penaltis": null  },
+		  { "id": "L16-5", "next": "L8-3", "slot": "t1", "t1": "Bélgica", "t2": "Senegal", "date": "01/07", "time": "17:00", "gols1": "3", "gols2": "2", "vencedor_penaltis": null  },
+		  { "id": "L16-6", "next": "L8-3", "slot": "t2", "t1": "Estados Unidos", "t2": "Bósnia", "date": "01/07", "time": "21:00", "gols1": "2", "gols2": "0", "vencedor_penaltis": null  },
 		  { "id": "L16-7", "next": "L8-4", "slot": "t1", "t1": "Espanha", "t2": "Áustria", "date": "02/07", "time": "16:00", "gols1": "", "gols2": "", "vencedor_penaltis": null  },
 		  { "id": "L16-8", "next": "L8-4", "slot": "t2", "t1": "Portugal", "t2": "Croácia", "date": "02/07", "time": "20:00", "gols1": "", "gols2": "", "vencedor_penaltis": null  }
 		],
@@ -284,6 +300,13 @@
 
 		configurarEventosPlacar();
 		carregarPlacaresIniciais();
+		document.querySelectorAll(".match-card").forEach(card => {
+			atualizarStatusCard(
+				card,
+				card.dataset.date,
+				card.dataset.time
+			);
+		});
 	}
 
 	function renderizarCardsIniciais(jogos, containerId) {
@@ -291,7 +314,7 @@
 		jogos.forEach(j => {
 			const pWin = j.vencedor_penaltis !== undefined ? j.vencedor_penaltis : null;
 			container.innerHTML += `
-				<div class="match-card" data-match-id="${j.id}" data-next-match="${j.next}" data-slot="${j.slot}" data-p-winner="${pWin}">
+				<div class="match-card" data-date="${j.date}" data-time="${j.time}" data-match-id="${j.id}" data-next-match="${j.next}" data-slot="${j.slot}" data-p-winner="${pWin}">
 		<div class="card-header">
 			<span>${j.date} - ${j.time}</span>
 			<span>UTC-3</span>
@@ -318,7 +341,7 @@
 		const container = document.getElementById(containerId);
 		jogos.forEach(j => {
 			container.innerHTML += `
-				<div class="match-card" data-match-id="${j.id}" data-next-match="${j.next}" data-slot="${j.slot}" data-p-winner="null">
+				<div class="match-card" data-date="${j.date}" data-time="${j.time}" data-match-id="${j.id}" data-next-match="${j.next}" data-slot="${j.slot}" data-p-winner="null">
 				<div class="card-header">
 					<span>${j.date} - ${j.time}</span>
 					<span>UTC-3</span>
@@ -451,6 +474,49 @@
 		const placeholders = card.querySelectorAll('.placeholder');
 		if (placeholders.length === 0) {
 			card.querySelectorAll('.score-input').forEach(i => i.removeAttribute('disabled'));
+		}
+	}
+	function obterDataJogo(dataStr, horaStr) {
+		if (dataStr){
+			const [dia, mes] = dataStr.split('/').map(Number);
+			const [hora, minuto] = horaStr.split(':').map(Number);
+
+			// Copa 2026
+			return new Date(2026, mes - 1, dia, hora, minuto);
+		}
+	}
+	function atualizarStatusCard(card, dataStr, horaStr) {
+
+		const agora = new Date();
+		const jogo = obterDataJogo(dataStr, horaStr);
+
+		const inicioHoje = new Date(
+			agora.getFullYear(),
+			agora.getMonth(),
+			agora.getDate()
+		);
+
+		const fimHoje = new Date(
+			agora.getFullYear(),
+			agora.getMonth(),
+			agora.getDate(),
+			23,59,59,999
+		);
+
+		card.classList.remove(
+			'match-past',
+			'match-today',
+			'match-future'
+		);
+
+		if (jogo < inicioHoje) {
+			card.classList.add('match-past');
+		}
+		else if (jogo <= fimHoje) {
+			card.classList.add('match-today');
+		}
+		else {
+			card.classList.add('match-future');
 		}
 	}
     </script>
